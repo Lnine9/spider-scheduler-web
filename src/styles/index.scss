@@ -6,6 +6,7 @@
 
 body {
   height: 100%;
+  background-color: #f3f4f8;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -62,4 +63,22 @@ div:focus {
 // main-container global css
 .app-container {
   padding: 20px;
+}
+
+.section {
+  margin: 10px;
+  padding: 16px;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
 }

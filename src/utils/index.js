@@ -115,3 +115,8 @@ export function param2Obj(url) {
   })
   return obj
 }
+
+
+export function simpleClone(obj) {
+  return JSON.parse(JSON.stringify(obj))
+}

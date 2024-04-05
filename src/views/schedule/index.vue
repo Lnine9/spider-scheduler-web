@@ -20,13 +20,17 @@
         <el-table-column label="所属专题" width="200" prop="subject_name" />
         <el-table-column label="爬虫ID" width="100" prop="spider_id" />
         <el-table-column label="Cron" width="120" prop="cron" align="center" />
-        <el-table-column label="上次运行时间" width="200" prop="last_run_time" />
+        <el-table-column label="上次运行时间" width="200">
+          <template slot-scope="{row}">
+            {{ row.last_run_time | dateTimeFilter }}
+          </template>
+        </el-table-column>
         <el-table-column label="状态" width="100" prop="status" align="center">
           <template slot-scope="{row}">
             <el-tag :type="row.status | statusColorFilter">{{ row.status | statusFilter }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" align="center" :min-width="200" fixed="right">
           <template slot-scope="{row}">
             <div class="operator">
               <el-tooltip effect="dark" content="开启">
@@ -84,7 +88,7 @@
 <script>
 import {getScheduleList, addSchedule, deleteSchedule, updateSchedule, changeStatus} from '@/api/schedule'
 import ScheduleForm from "@/views/schedule/ScheduleForm.vue";
-import {simpleClone} from "@/utils";
+import {dateTimeFilter, simpleClone} from "@/utils";
 
 const STATUS_COLOR_MAP = {
   0: 'info',
@@ -105,7 +109,8 @@ export default {
   components: {ScheduleForm},
   filters: {
     statusFilter,
-    statusColorFilter
+    statusColorFilter,
+    dateTimeFilter
   },
   data() {
     return {

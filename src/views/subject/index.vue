@@ -66,7 +66,7 @@ export default {
     async fetchData() {
       try {
         const res = await getSubjectList()
-        this.list = res.data
+        this.list = res.data.list
       } catch (e) {
         this.$message.error(e.message)
       }
@@ -90,6 +90,7 @@ export default {
     },
     async handleSubmitEditSubject(data) {
       try {
+        console.log(data)
         const res = await updateSubject(data)
         this.$message.success('编辑成功')
         this.editModalVisible = false

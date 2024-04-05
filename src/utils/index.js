@@ -120,3 +120,11 @@ export function param2Obj(url) {
 export function simpleClone(obj) {
   return JSON.parse(JSON.stringify(obj))
 }
+
+export function formatDateTime(time) {
+  return parseTime(time, '{y}-{m}-{d} {h}:{i}:{s}')
+}
+
+export const dateTimeFilter = (time) => {
+  return formatDateTime(time)
+}

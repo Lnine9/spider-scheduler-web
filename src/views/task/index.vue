@@ -1,7 +1,7 @@
 <template>
 <div class="task__container">
-  <div class="task__header section">
-    <div class="filter">
+  <div class="task__header">
+    <div class="content">
       <el-form
         inline
         size="small"
@@ -17,16 +17,22 @@
         <el-form-item label="名称">
           <el-input v-model="filter.name" placeholder="请输入名称" clearable />
         </el-form-item>
-        <el-form-item label="所属专题">
+        <el-form-item>
+          <template v-slot:label>
+            <i class="el-icon-collection" /> 所属专题
+          </template>
           <SubjectSelect v-model="filter.subject_id" placeholder="请选择专题" clearable />
         </el-form-item>
-        <el-form-item label="所属计划">
+        <el-form-item>
+          <template v-slot:label>
+            <i class="el-icon-timer" /> 所属计划
+          </template>
           <ScheduleSelect v-model="filter.schedule_id" placeholder="请选择计划" clearable />
         </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
             v-model="filter.create_time"
-            type="daterange"
+            type="datetimerange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -35,9 +41,11 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="search" icon="el-icon-search">查询</el-button>
+          <el-button type="primary" @click="addModalVisible = true" size="small" icon="el-icon-plus">新建任务</el-button>
         </el-form-item>
       </el-form>
     </div>
+    <div class="illustration" />
   </div>
   <div class="task__content section">
     <div class="table">
@@ -56,13 +64,13 @@
             <el-tag size="small" :type="row.status | statusColorFilter">{{ row.status | statusFilter }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="开始/结束时间">
+        <el-table-column label="开始/结束时间" width="180">
           <template slot-scope="{row}">
             <div>{{ row.start_time | dateTimeFilter }}</div>
             <div>{{ row.end_time | dateTimeFilter }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" prop="create_time">
+        <el-table-column label="创建时间" prop="create_time" width="180">
           <template slot-scope="{row}">
             {{ row.create_time | dateTimeFilter }}
           </template>
@@ -97,15 +105,24 @@
   >
     <ProjectDetail :project-id="detailProjectId" />
   </el-dialog>
+
+  <el-dialog
+    title="新建任务"
+    :visible.sync="addModalVisible"
+    width="60%"
+  >
+    <ProjectForm @submit="handleAddProjectSubmit" />
+  </el-dialog>
 </div>
 </template>
 
 <script>
 import SubjectSelect from "@/components/SubjectSelect/index.vue";
 import ScheduleSelect from "@/components/ScheduleSelect/index.vue";
-import {queryProject} from "@/api/task";
+import {addProject, queryProject} from "@/api/task";
 import ProjectDetail from "@/views/task/ProjectDetail.vue";
 import {dateTimeFilter} from "@/utils";
+import ProjectForm from "@/views/task/ProjectForm.vue";
 
 const STATUS_COLOR_MAP = {
   0: 'warning',
@@ -123,7 +140,7 @@ const statusFilter = status => STATUS_MAP[status]
 
 export default {
   name: "index",
-  components: {ProjectDetail, ScheduleSelect, SubjectSelect},
+  components: {ProjectForm, ProjectDetail, ScheduleSelect, SubjectSelect},
   filters: {
     statusColorFilter,
     statusFilter,
@@ -140,6 +157,7 @@ export default {
       detailModalVisible: false,
       detailProjectId: null,
       autoRefresh: false,
+      addModalVisible: false,
     }
   },
   created() {
@@ -152,9 +170,12 @@ export default {
       try {
         const params = {
           ...this.filter,
+          create_time_start: this.filter.create_time ? this.filter.create_time[0] : null,
+          create_time_end: this.filter.create_time ? this.filter.create_time[1] : null,
           page_num: this.currentPage,
           page_size: this.pageSize
         }
+        delete params.create_time
         const {data} = await queryProject(params)
         this.list = data.list
         this.total = data.total
@@ -186,6 +207,16 @@ export default {
         this.autoRefresh = false
         clearInterval(this.autoRefreshTimer)
       }
+    },
+    async handleAddProjectSubmit(data) {
+      try {
+        await addProject(data)
+        this.$message.success('新建成功')
+        this.addModalVisible = false
+        await this.search()
+      } catch (e) {
+        this.$message.error(e.message)
+      }
     }
   }
 }
@@ -193,6 +224,30 @@ export default {
 
 <style scoped lang="scss">
 .task__container {
+  .task__header {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: white;
+    margin: 10px;
+    padding: 4px;
+
+    .content {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    .illustration {
+      box-sizing: border-box;
+      background: url("~@/assets/svg/task.svg") right no-repeat;
+      background-size: contain;
+      height: 100%;
+    }
+  }
+
   .refresh-container {
     display: flex;
     align-items: center;

@@ -43,7 +43,7 @@
       </div>
       <div class="item">
         <div class="item__label">
-          状态
+          当前状态
         </div>
         <div class="item__value">
           <el-tag size="small" :type="project.status | statusColorFilter">{{ project.status | statusFilter }}</el-tag>
@@ -51,18 +51,34 @@
       </div>
       <div class="item">
         <div class="item__label">
-          当前进度
+          总抓取量
         </div>
         <div class="item__value">
-          <el-progress :percentage="process" />
+          {{ project.total_crawl }} （条）
         </div>
       </div>
       <div class="item">
         <div class="item__label">
-          总抓取量
+          当前进度
         </div>
         <div class="item__value">
-          {{ project.total_crawl }}
+          <el-progress style="width: 70%" :percentage="process" />
+        </div>
+      </div>
+      <div class="item">
+        <div class="item__label">
+          抓取范围
+        </div>
+        <div class="item__value" style="font-size: 12px">
+          {{ project.range_start_time | dateTimeFilter }} <br/> {{ project.range_end_time | dateTimeFilter }}
+        </div>
+      </div>
+      <div class="item">
+        <div class="item__label">
+          切片大小
+        </div>
+        <div class="item__value">
+          {{ project.slice_size }} (min)
         </div>
       </div>
     </div>
@@ -184,7 +200,7 @@ export default {
     background-color: #f4f7f8;
     padding: 20px;
     display: grid;
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
     grid-auto-flow: column;
     border-radius: 6px;
     gap: 10px;
@@ -196,6 +212,8 @@ export default {
       .item__label {
         width: 80px;
         font-weight: bold;
+        text-align: right;
+        margin-right: 0.5rem;
 
         &::after {
           content: ':';

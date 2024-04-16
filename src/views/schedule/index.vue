@@ -1,9 +1,12 @@
 <template>
 <div class="schedule__container">
-  <div class="schedule_header section">
-    <el-button type="primary" @click="showAddModal" icon="el-icon-plus">新建计划</el-button>
-    <el-button @click="fetchData" icon="el-icon-refresh" :loading="listLoading">刷新</el-button>
-    <el-switch class="auto-refresh" v-model="autoRefresh" active-text="自动刷新(5s)" @change="switchAutoRefresh" />
+  <div class="schedule_header">
+    <div class="content">
+      <el-button type="primary" @click="showAddModal" icon="el-icon-plus">新建计划</el-button>
+      <el-button @click="fetchData" icon="el-icon-refresh" :loading="listLoading">刷新</el-button>
+      <el-switch class="auto-refresh" v-model="autoRefresh" active-text="自动刷新(5s)" @change="switchAutoRefresh" />
+    </div>
+    <div class="illustration" />
   </div>
   <div class="schedule_content section">
     <div class="table">
@@ -232,6 +235,27 @@ export default {
 .schedule__container {
 
   .schedule_header {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: white;
+    margin: 10px;
+    padding: 4px;
+
+    .content {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+    }
+    .illustration {
+      background: url("~@/assets/svg/schedule.svg") right no-repeat;
+      background-size: contain;
+      height: 100%;
+      min-height: 100px;
+    }
+
     .auto-refresh {
       margin-left: 20px;
 

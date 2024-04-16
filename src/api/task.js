@@ -23,3 +23,11 @@ export function getTaskByProjectId(params) {
     params
   });
 }
+
+export function addProject(data) {
+  return request({
+    url: "/project/add",
+    method: "post",
+    data
+  });
+}

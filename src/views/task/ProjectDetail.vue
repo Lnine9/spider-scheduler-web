@@ -46,7 +46,7 @@
           当前状态
         </div>
         <div class="item__value">
-          <el-tag size="small" :type="project.status | statusColorFilter">{{ project.status | statusFilter }}</el-tag>
+          <el-tag size="small" :type="project.status | projectStatusColorFilter">{{ project.status | projectStatusFilter }}</el-tag>
         </div>
       </div>
       <div class="item">
@@ -100,9 +100,15 @@
             <div>{{ row.node_ip }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="状态">
+        <el-table-column label="状态" align="center">
           <template slot-scope="{row}">
-            <el-tag size="small" :type="row.status | statusColorFilter">{{ row.status | statusFilter }}</el-tag>
+            <el-tag size="small" :type="row.status | taskStatusColorFilter">{{ row.status | taskStatusFilter }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="抓取范围" :width="150">
+          <template slot-scope="{row}">
+            <div>{{ row.range_start_time | dateTimeFilter }}</div>
+            <div>{{ row.range_end_time | dateTimeFilter }}</div>
           </template>
         </el-table-column>
         <el-table-column label="开始/结束时间" :width="150">
@@ -113,7 +119,7 @@
         </el-table-column>
         <el-table-column label="抓取量" prop="total_crawl" />
         <el-table-column label="耗时" prop="cost_time" />
-        <el-table-column label="操作">
+        <el-table-column label="操作" align="center">
           <template slot-scope="{row}">
             <el-button type="text" @click="showLog(row.id)">日志</el-button>
           </template>
@@ -126,20 +132,7 @@
 <script>
 import {getProject, getTaskByProjectId} from "@/api/task";
 import {dateTimeFilter} from "@/utils";
-
-const STATUS_COLOR_MAP = {
-  0: 'warning',
-  1: 'success',
-}
-
-const STATUS_MAP = {
-  0: '未完成',
-  1: '已完成',
-}
-
-const statusColorFilter = status => STATUS_COLOR_MAP[status]
-const statusFilter = status => STATUS_MAP[status]
-
+import {projectStatusColorFilter, projectStatusFilter, taskStatusFilter, taskStatusColorFilter} from '@/constants/task'
 
 export default {
   name: "ProjectDetail",
@@ -150,8 +143,10 @@ export default {
     },
   },
   filters: {
-    statusColorFilter,
-    statusFilter,
+    projectStatusFilter,
+    projectStatusColorFilter,
+    taskStatusFilter,
+    taskStatusColorFilter,
     dateTimeFilter
   },
   data() {
@@ -182,7 +177,9 @@ export default {
         const {data: projectData} = await getProject({id: this.projectId});
         const {data: taskListData} = await getTaskByProjectId({project_id: this.projectId});
         this.project = projectData;
+        taskListData.list.sort((a, b) => a.range_start_time - b.range_start_time);
         this.taskList = taskListData.list;
+
       } catch (e) {
         this.$message.error(e.message);
       }

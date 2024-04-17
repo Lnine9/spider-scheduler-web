@@ -59,7 +59,7 @@
         <el-table-column label="名称" prop="name" />
         <el-table-column label="所属专题" prop="subject_name" />
         <el-table-column label="所属计划" prop="schedule_name" />
-        <el-table-column label="状态">
+        <el-table-column label="状态" align="center">
           <template slot-scope="{row}">
             <el-tag size="small" :type="row.status | statusColorFilter">{{ row.status | statusFilter }}</el-tag>
           </template>
@@ -75,7 +75,7 @@
             {{ row.create_time | dateTimeFilter }}
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" align="center">
           <template slot-scope="{row}">
             <el-button type="text" @click="showDetail(row.id)">详情</el-button>
           </template>

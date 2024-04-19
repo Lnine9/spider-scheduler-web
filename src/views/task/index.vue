@@ -163,6 +163,9 @@ export default {
   created() {
     this.search()
   },
+  beforeDestroy() {
+    clearInterval(this.autoRefreshTimer)
+  },
   methods: {
     async search() {
       this.listLoading = true

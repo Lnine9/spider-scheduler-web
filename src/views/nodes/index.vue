@@ -7,7 +7,7 @@
       <div class="illustration" />
     </div>
     <div class="nodes__content">
-      <div class="node-list">
+      <div class="node-list" v-loading="listLoading">
         <template v-for="item in list">
           <div
             :key="item.id"
@@ -25,14 +25,46 @@
           </div>
         </template>
       </div>
-      <div class="node-detail">
-
+      <div class="node-detail" v-loading="detailLoading">
+        <div class="empty" v-if="!activeNodeDetail">
+          请选择一个节点查看详情
+        </div>
+        <template v-else>
+          <div class="disconnect" v-if="activeNodeDetail.status === 0">
+            未连接
+          </div>
+          <template v-else>
+            <div class="hardware">
+              <div class="pane">
+                <el-progress :percentage="parseInt(activeNodeDetail.cpu_percent)" type="dashboard" :stroke-width="10" />
+                <div class="text">
+                  CPU使用率
+                </div>
+              </div>
+              <div class="pane">
+                <el-progress :percentage="parseInt(activeNodeDetail.memory_used_mb / activeNodeDetail.memory_total_mb * 100)" type="dashboard" :stroke-width="10" />
+                <div class="text">
+                  内存使用率
+                  <div class="desc">{{ activeNodeDetail.memory_used_mb.toFixed(0) }} / {{ activeNodeDetail.memory_total_mb.toFixed(0) }} MB</div>
+                </div>
+              </div>
+              <div class="pane">
+                <el-progress :percentage="parseInt(activeNodeDetail.disk_used_mb / activeNodeDetail.disk_total_mb * 100)" type="dashboard" :stroke-width="10" />
+                <div class="text">
+                  磁盘使用率
+                  <div class="desc">{{ activeNodeDetail.disk_used_mb.toFixed(0) }} / {{ activeNodeDetail.disk_total_mb.toFixed(0) }} MB</div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </template>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import {getNodeList, getNodeDetail, addNode, deleteNode} from "@/api/node";
 
 const NODE_STATUS_COLOR_MAP = {
   0: "#909399",
@@ -59,18 +91,43 @@ export default {
       list: [],
       addModalVisible: false,
       activeNode: null,
+      listLoading: false,
+      activeNodeDetail: null,
+      detailLoading: false,
+      autoRefreshListTimer: null,
+      autoRefreshDetailTimer: null
     }
   },
   created() {
     this.fetchData()
+    // this.initAutoRefresh()
+  },
+  beforeDestroy() {
+    clearInterval(this.autoRefreshListTimer)
+    clearInterval(this.autoRefreshDetailTimer)
   },
   methods: {
-    async fetchData() {
-      this.list = [
-        {id: 1, address: "127.0.0.1:8000", status: 0},
-        {id: 2, address: "127.0.0.2:9000", status: 1},
-        {id: 3, address: "127.0.0.3:8000", status: 2},
-      ]
+    initAutoRefresh() {
+      this.autoRefreshListTimer = setInterval(() => {
+        this.fetchData(false)
+      }, 10000)
+      this.autoRefreshDetailTimer = setInterval(() => {
+        if (this.activeNode) {
+          this.fetchDetailData(false)
+        }
+      }, 5000)
+    },
+    async fetchData(needLoading = true) {
+      try {
+        if (needLoading)
+          this.listLoading = true
+        const {data} = await getNodeList()
+        this.list = data.list
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.listLoading = false
+      }
     },
     showAddModal() {
       this.addModalVisible = true
@@ -78,9 +135,24 @@ export default {
     getNodeStatusColor(status) {
       return NODE_STATUS_COLOR_MAP[status]
     },
+    async fetchDetailData(needLoading = true) {
+      try {
+        if (needLoading)
+          this.detailLoading = true
+        const {data} = await getNodeDetail({id: this.activeNode})
+        if (String(data.id) === String(this.activeNode)) {
+          this.activeNodeDetail = data
+        }
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.detailLoading = false
+      }
+    },
     handleSelectNode(item) {
       this.activeNode = item.id
-    }
+      this.fetchDetailData()
+    },
   }
 }
 </script>
@@ -111,13 +183,18 @@ export default {
     }
   }
   .nodes__content {
+    display: flex;
+    height: 70vh;
+
+
     .node-list {
-      width: 400px;
+      width: 25%;
+      min-width: 400px;
       border-radius: 6px;
       background-color: white;
       padding: 10px;
       margin: 10px;
-      height: 70vh;
+      height: 100%;
 
       .node-item {
         display: flex;
@@ -158,6 +235,43 @@ export default {
           }
           .status-text {
             font-size: 12px;
+          }
+        }
+      }
+    }
+
+    .node-detail {
+      flex: 1;
+      border-radius: 6px;
+      background-color: white;
+      padding: 16px;
+      margin: 10px;
+      height: 100%;
+
+      .hardware {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+
+      .pane {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ededed;
+        border-radius: 6px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 6px;
+
+        .text {
+          font-size: 14px;
+          margin-left: 12%;
+          height: 80%;
+
+          .desc {
+            font-size: 12px;
+            color: #7b7b7b;
           }
         }
       }

@@ -132,6 +132,9 @@ export default {
   created() {
     this.fetchData()
   },
+  beforeDestroy() {
+    clearInterval(this.autoRefreshTimer)
+  },
   methods: {
     async fetchData() {
       this.listLoading = true

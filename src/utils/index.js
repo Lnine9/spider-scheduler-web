@@ -2,6 +2,9 @@
  * Created by PanJiaChen on 16/11/18.
  */
 
+import { uploadSpider } from '@/api/spider'
+import { Message } from 'element-ui'
+
 /**
  * Parse the time to string
  * @param {(Object|string|number)} time
@@ -116,7 +119,18 @@ export function param2Obj(url) {
   return obj
 }
 
-
 export function simpleClone(obj) {
   return JSON.parse(JSON.stringify(obj))
+}
+
+export function fileUploader(formData) {
+  return new Promise((resolve, reject) => {
+    uploadSpider(formData).then(response => {
+      Message.success('Upload Success:' + response.data.resolver_id)
+      resolve(response)
+    }).catch(error => {
+      Message.error('Upload Error')
+      reject(error)
+    })
+  })
 }

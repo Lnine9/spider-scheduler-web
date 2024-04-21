@@ -99,6 +99,17 @@ export const constantRoutes = [
     }]
   },
 
+  {
+    path: '/manage',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'Manage',
+      component: () => import('@/views/manage/index'),
+      meta: { title: '爬虫管理', icon: 'el-icon-upload' }
+    }]
+  },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

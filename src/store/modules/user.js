@@ -6,8 +6,7 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: '',
-    password: ''
+    avatar: ''
   }
 }
 
@@ -25,9 +24,6 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
-  },
-  SET_PASSWORD: (state, password) => {
-    state.password = password
   }
 }
 
@@ -36,13 +32,11 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      console.log(userInfo)
       login({ user_name: username.trim(), password: password }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         commit('SET_NAME', username.trim())
-        commit('SET_PASSWORD', password)
         commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
         resolve()
       }).catch(error => {
@@ -93,6 +87,7 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       removeToken() // must remove  token  first
+      resetRouter()
       commit('RESET_STATE')
       resolve()
     })

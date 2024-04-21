@@ -53,7 +53,17 @@
           <el-input v-model="model.url" />
         </el-form-item>
         <el-form-item label="请求方式" prop="method" required>
-          <el-input v-model="model.method" />
+          <el-select v-model="model.method" placeholder="请选择">
+            <el-option
+              v-for="item in methodType"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="model.method === 'POST'" label="请求体" prop="body">
+          <el-input v-model="model.body" />
         </el-form-item>
       </el-form>
     </div>
@@ -107,20 +117,44 @@ export default {
         value: ''
       }],
       typeList: [{
-        value: '选项1',
-        label: '黄金糕'
+        value: 'AG_L',
+        label: 'AG_L'
       }, {
-        value: '选项2',
-        label: '双皮奶'
+        value: 'CB_E',
+        label: 'CB_E'
       }, {
-        value: '选项3',
-        label: '蚵仔煎'
+        value: 'CB_G',
+        label: 'CB_G'
       }, {
-        value: '选项4',
-        label: '龙须面'
+        value: 'C_A',
+        label: 'C_A'
       }, {
-        value: '选项5',
-        label: '北京烤鸭'
+        value: 'C_G',
+        label: 'C_G'
+      }, {
+        value: 'DL',
+        label: 'DL'
+      }, {
+        value: 'FB_G',
+        label: 'FB_G'
+      }, {
+        value: 'HT_G',
+        label: 'HT_G'
+      }, {
+        value: 'I_G',
+        label: 'I_G'
+      }, {
+        value: 'MB_G',
+        label: 'MB_G'
+      }, {
+        value: 'MED_AN',
+        label: 'MED_AN'
+      }, {
+        value: 'RB_E',
+        label: 'RB_E'
+      }, {
+        value: 'WB_G',
+        label: 'WB_G'
       }],
       resolver: [],
       resolverRule: [{
@@ -129,6 +163,13 @@ export default {
         message: 'please choose one parser id at least',
         trigger: 'blur',
         validator: this.checkParser
+      }],
+      methodType: [{
+        value: 'GET',
+        label: 'GET'
+      }, {
+        value: 'POST',
+        label: 'POST'
       }]
     }
   },

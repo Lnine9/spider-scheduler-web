@@ -1,26 +1,32 @@
 <template>
   <div class="subject__container">
     <div class="subject__header section">
-      <el-button type="primary" @click="showAddModal" icon="el-icon-plus">新建专题</el-button>
+      <div class="content">
+        <el-button type="primary" @click="showAddModal" icon="el-icon-plus">新建专题</el-button>
+      </div>
+      <div class="illustration" />
     </div>
     <div class="subject__content section">
       <div class="subject-list">
         <template v-for="item in list">
-          <el-card :key="item.id" class="subject-item" shadow="hover">
-            <div class="subject-item__header">
-              <div class="subject-item__title">{{ item.name }}</div>
-              <div class="subject-item__action">
-                <el-button type="text" icon="el-icon-edit" @click="showEditModal(item)">编辑</el-button>
-                <el-button type="text" icon="el-icon-delete" @click="deleteSubject(item)">删除</el-button>
+          <div :key="item.id" class="subject-item">
+            <div class="cover" />
+            <div class="right">
+              <div class="subject-item__header">
+                <div class="subject-item__title">{{ item.name }}</div>
+                <div class="subject-item__action">
+                  <el-button type="text" icon="el-icon-edit" @click="showEditModal(item)">编辑</el-button>
+                  <el-button type="text" icon="el-icon-delete" @click="deleteSubject(item)">删除</el-button>
+                </div>
+              </div>
+              <div class="subject-item__content">
+                <div class="subject-item__desc">{{ item.description }}</div>
+              </div>
+              <div class="subject-item__footer">
+                <div class="subject-item__id"># {{ item.id }}</div>
               </div>
             </div>
-            <div class="subject-item__content">
-              <div class="subject-item__desc">{{ item.description }}</div>
-            </div>
-            <div class="subject-item__footer">
-              <div class="subject-item__id"># {{ item.id }}</div>
-            </div>
-          </el-card>
+          </div>
         </template>
       </div>
     </div>
@@ -66,7 +72,7 @@ export default {
     async fetchData() {
       try {
         const res = await getSubjectList()
-        this.list = res.data
+        this.list = res.data.list
       } catch (e) {
         this.$message.error(e.message)
       }
@@ -90,6 +96,7 @@ export default {
     },
     async handleSubmitEditSubject(data) {
       try {
+        console.log(data)
         const res = await updateSubject(data)
         this.$message.success('编辑成功')
         this.editModalVisible = false
@@ -120,6 +127,30 @@ export default {
 <style scoped lang="scss">
 .subject__container {
 
+  .subject__header {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: white;
+    margin: 10px;
+    padding: 4px;
+
+    .content {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    .illustration {
+      background: url("~@/assets/svg/subject.svg") right no-repeat;
+      background-size: contain;
+      height: 100%;
+      min-height: 100px;
+    }
+  }
+
   .subject__content {
     background-color: #f6f6f8;
 
@@ -130,7 +161,30 @@ export default {
 
       .subject-item {
         width: 400px;
+        height: 200px;
         border: 1px solid #dbdde3;
+        border-radius: 6px;
+        padding: 10px;
+        background: white;
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        transition: box-shadow 0.2s;
+        cursor: pointer;
+
+        &:hover {
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cover {
+          background: url("~@/assets/svg/book.svg") center no-repeat;
+          background-size: contain;
+          height: 100%;
+        }
+
+        .right {
+          display: grid;
+          grid-template-rows: 60px 1fr 24px;
+        }
 
         .subject-item__header {
           display: flex;
@@ -153,8 +207,8 @@ export default {
           padding: 10px;
 
           .subject-item__desc {
-            font-size: 14px;
-            color: #666;
+            font-size: 12px;
+            color: #9d9c9c;
           }
         }
 

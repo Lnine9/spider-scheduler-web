@@ -13,14 +13,18 @@ export const projectStatusFilter = status => PROJECT_STATUS_MAP[status]
 
 const TASK_STATUS_COLOR_MAP = {
   0: 'info',
-  1: 'warning',
-  2: 'success',
+  1: 'info',
+  2: 'warning',
+  3: 'success',
+  4: 'danger',
 }
 
 const TASK_STATUS_MAP = {
-  0: '等待中',
-  1: '进行中',
-  2: '已完成',
+  0: '未开始',
+  1: '等待中',
+  2: '进行中',
+  3: '已完成',
+  4: '执行异常',
 }
 
 export const taskStatusColorFilter = status => TASK_STATUS_COLOR_MAP[status]

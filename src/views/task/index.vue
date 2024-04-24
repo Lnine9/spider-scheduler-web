@@ -211,7 +211,7 @@ export default {
         clearInterval(this.autoRefreshTimer)
       }
     },
-    async handleAddProjectSubmit(data) {
+    async handleAddProjectSubmit(data, callback) {
       try {
         await addProject(data)
         this.$message.success('新建成功')
@@ -219,6 +219,8 @@ export default {
         await this.search()
       } catch (e) {
         this.$message.error(e.message)
+      } finally {
+        callback()
       }
     }
   }

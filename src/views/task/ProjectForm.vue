@@ -43,7 +43,7 @@
       </div>
     </div>
     <div class="project-form__footer">
-      <el-button type="primary" @click="submit">提交</el-button>
+      <el-button type="primary" @click="submit" :loading="loading">提交</el-button>
     </div>
   </div>
 </template>
@@ -56,19 +56,23 @@ export default {
   components: {SubjectSelect},
   data() {
     return {
-      model: {}
+      model: {},
+      loading: false
     }
   },
   methods: {
     submit() {
       this.$refs.form.validate(valid => {
         if (valid) {
+          this.loading = true
           const data = {
             ...this.model,
             range_start_time: this.model.range_start_time.getTime() / 1000,
             range_end_time: this.model.range_end_time.getTime() / 1000
           }
-          this.$emit('submit', data)
+          this.$emit('submit', data, () => {
+            this.loading = false
+          })
         }
       })
     }

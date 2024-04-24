@@ -297,7 +297,7 @@ export default {
   .manage-form__footer {
     margin: 0 50px 0 50px;
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
   }
 
   .manage-upload {

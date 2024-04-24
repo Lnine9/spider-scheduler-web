@@ -28,6 +28,7 @@ export function addProject(data) {
   return request({
     url: "/project/add",
     method: "post",
-    data
+    data,
+    timeout: 60 * 1000
   });
 }

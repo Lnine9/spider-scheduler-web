@@ -168,7 +168,7 @@ export default {
     process() {
       if (!this.taskList || !this.taskList.length) return 0;
       // 子任务中已完成的数量 / 总任务数
-      return this.taskList.filter(item => item.status === 1).length / this.taskList.length * 100;
+      return this.taskList.filter(item => item.status === 3).length / this.taskList.length * 100;
     },
   },
   methods: {

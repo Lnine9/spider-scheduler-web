@@ -100,12 +100,12 @@ export const constantRoutes = [
   },
 
   {
-    path: '/manage',
+    path: '/spider',
     component: Layout,
     children: [{
       path: 'index',
-      name: 'Manage',
-      component: () => import('@/views/manage/index'),
+      name: 'Spider',
+      component: () => import('@/views/spider/index'),
       meta: { title: '爬虫管理', icon: 'el-icon-upload' }
     }]
   },

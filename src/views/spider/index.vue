@@ -1,63 +1,63 @@
 <template>
-  <div class="manage__container">
-    <div class="manage__header">
+  <div class="spider__container">
+    <div class="spider__header">
       <div class="content">
         <el-button type="primary" size="medium" @click="addModel()">新增爬虫</el-button>
       </div>
       <div class="illustration" />
     </div>
-    <div class="section">
-      <div class="manage__content">
-        <div class="table">
-          <el-table
-            v-loading="listLoading"
-            class="down"
-            :data="list"
-            stripe
-            height="700"
-          >
-            <el-table-column width="200" prop="id" label="ID" />
-            <el-table-column width="250" prop="name" label="名称" />
-            <el-table-column prop="description" label="描述" />
-            <el-table-column prop="an_type" label="公共类型" />
-            <el-table-column prop="url" label="目标网站" />
-            <el-table-column width="250px" label="操作" align="center">
-              <template slot-scope="scope">
-                <el-tooltip effect="dark" content="details">
-                  <el-button type="text" @click="showInfoPop(scope)">详情</el-button>
-                </el-tooltip>
-                <el-tooltip effect="dark" content="edit">
-                  <el-button type="text" @click="showEditPop(scope)">编辑</el-button>
-                </el-tooltip>
-                <el-tooltip effect="dark" content="delete">
-                  <el-button type="text" @click="deleteManageSpider(scope)">删除</el-button>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-          </el-table>
+    <div class="main_content">
+      <div class="section">
+        <div class="title">爬虫信息</div>
+        <div class="spider__content">
+          <div class="table">
+            <el-table
+              v-loading="listLoading"
+              :data="list"
+            >
+              <el-table-column width="200" prop="id" label="ID" />
+              <el-table-column width="250" prop="name" label="名称" />
+              <el-table-column prop="description" label="描述" />
+              <el-table-column prop="an_type" label="公共类型" />
+              <el-table-column width="250px" label="操作" align="center">
+                <template slot-scope="scope">
+                  <el-tooltip effect="dark" content="edit">
+                    <el-button type="text" @click="showEditPop(scope)">编辑</el-button>
+                  </el-tooltip>
+                  <el-tooltip effect="dark" content="delete">
+                    <el-button style="color: #e53b6e" type="text" @click="deleteManageSpider(scope)">删除</el-button>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <div class="pagination">
+            <el-pagination
+              :current-page="currentPage"
+              :page-sizes="[10, 20]"
+              :page-size="pageSize"
+              background
+              layout="total, sizes, prev, pager, next"
+              :total="total"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
+          </div>
         </div>
-        <div class="pagination">
-          <el-pagination
-            :current-page="currentPage"
-            :page-sizes="[10, 20, 50, 100]"
-            :page-size="pageSize"
-            background
-            layout="total, sizes, prev, pager, next"
-            :total="total"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          />
-        </div>
+      </div>
+      <div class="section">
+        <div class="title">解析器列表</div>
+        <ResolverList />
       </div>
     </div>
     <el-dialog
       v-if="addModalVisible"
       title="新建爬虫"
       :visible.sync="addModalVisible"
-      width="40%"
+      width="60%"
     >
-      <div class="manage__from">
-        <ManageForm :show-modal-visible="showModalVisible" @submit="submitAddForm" />
+      <div class="spider__from">
+        <SpiderForm @submit="submitAddForm" />
       </div>
     </el-dialog>
 
@@ -65,44 +65,36 @@
       v-if="editModalVisible"
       title="编辑爬虫"
       :visible.sync="editModalVisible"
-      width="40%"
+      width="60%"
     >
-      <div class="manage__from">
-        <ManageForm :show-modal-visible="showModalVisible" :row="row" type="edit" @submit="submitEditForm" />
-      </div>
-    </el-dialog>
-
-    <el-dialog
-      v-if="showModalVisible"
-      title="爬虫详情"
-      :visible.sync="showModalVisible"
-      width="40%"
-    >
-      <div class="manage__from">
-        <ManageForm :show-modal-visible="showModalVisible" :row="row" />
+      <div class="spider__from">
+        <SpiderForm :default-value="editItem" type="edit" @submit="submitEditForm" />
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import ManageForm from '@/views/manage/ManageForm.vue'
 import { addManageSpider, deleteManageSpider, getManageSpiderList, updateManageSpider } from '@/api/spider'
+import SpiderForm from "@/views/spider/SpiderForm.vue";
+import {simpleClone} from "@/utils";
+import ResolverList from "@/views/spider/ResolverList.vue";
 
 export default {
   name: 'Manage',
-  components: { ManageForm },
+  components: {ResolverList, SpiderForm },
   data() {
     return {
       list: [],
       addModalVisible: false,
-      showModalVisible: false,
       editModalVisible: false,
+      editItem: null,
       listLoading: false,
       currentPage: 1,
       pageSize: 10,
       total: 0,
-      row: null
+      row: null,
+      resolverList: []
     }
   },
   created() {
@@ -113,18 +105,10 @@ export default {
       this.addModalVisible = true
       this.showModalVisible = false
     },
-    showInfoPop(scope) {
-      this.showModalVisible = true
-      const json = JSON.stringify(scope.row)
-      this.row = null
-      this.row = JSON.parse(json)
-    },
     showEditPop(scope) {
       this.editModalVisible = true
       this.showModalVisible = false
-      const json = JSON.stringify(scope.row)
-      this.row = null
-      this.row = JSON.parse(json)
+      this.editItem = simpleClone(scope.row)
     },
     async fetchData() {
       this.listLoading = true
@@ -196,8 +180,8 @@ export default {
 
 <style scoped lang="scss">
 
-.manage__container {
-  .manage__header {
+.spider__container {
+  .spider__header {
     display: grid;
     grid-template-columns: 1fr 300px;
     border-radius: 6px;
@@ -220,13 +204,19 @@ export default {
       min-height: 100px;
     }
 
-    .manage-text {
+    .spider-text {
       font-size: 25px;
       font-weight: bold;
     }
   }
 
-  .manage__content {
+  .main_content {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 400px;
+  }
+
+  .spider__content {
 
     .table {
       min-height: 73vh;
@@ -236,6 +226,15 @@ export default {
       margin-top: 20px;
       display: flex;
       justify-content: flex-end;
+    }
+  }
+
+  .section {
+    display: grid;
+    grid-template-rows: 30px 1fr;
+    .title {
+      font-weight: bold;
+      margin-bottom: 10px;
     }
   }
 

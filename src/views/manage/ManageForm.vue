@@ -28,29 +28,29 @@
         <el-form-item label="主类名称" prop="main_class" required>
           <el-input v-model="model.main_class" />
         </el-form-item>
-        <el-form-item label="解析器" prop="resolvers" :rules="resolverRule">
-          <el-button type="primary" @click="showUploadModel(true)">上传文件</el-button>
-          <template v-for="(item, index) in options">
-            <el-form-item
-              :key="index"
-              :rules="resolverRule"
-            >
-              <ManageSelect
-                v-model="item.value"
-                :options="options"
-                :resolver="resolver"
-                :loading="loading"
-                :index="index"
-                @deleteParser="deleteParser"
-                @selectExtra="selectExtra"
-              />
-            </el-form-item>
-          </template>
-        </el-form-item>
-        <el-form-item label="">
-          <el-button type="primary" @click="add">添加</el-button>
-        </el-form-item>
-        <el-form-item label="网站URL" prop="url" required>
+<!--        <el-form-item label="解析器" prop="resolvers">-->
+<!--          <el-button type="primary" @click="showUploadModel(true)">上传文件</el-button>-->
+<!--          <template v-for="(item, index) in parserIds">-->
+<!--            <el-form-item-->
+<!--              :key="index"-->
+<!--              :rules="resolverRule"-->
+<!--            >-->
+<!--              <ManageSelect-->
+<!--                v-model="item.value"-->
+<!--                :options="options"-->
+<!--                :resolver="resolver"-->
+<!--                :loading="loading"-->
+<!--                :index="index"-->
+<!--                @deleteParser="deleteParser"-->
+<!--                @selectExtra="selectExtra"-->
+<!--              />-->
+<!--            </el-form-item>-->
+<!--          </template>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="">-->
+<!--          <el-button type="primary" @click="add">添加</el-button>-->
+<!--        </el-form-item>-->
+        <el-form-item label="初始请求URL" prop="url" required>
           <el-input v-model="model.url" />
         </el-form-item>
         <el-form-item label="请求方式" prop="method" required>
@@ -113,10 +113,6 @@ export default {
       uploadModelVisible: false,
       loading: false,
       parserIds: [],
-      options: [{
-        key: Date.now(),
-        value: ''
-      }],
       typeList: [{
         value: 'AG_L',
         label: 'AG_L'
@@ -179,10 +175,6 @@ export default {
     if (Object.keys(this.row).length > 0) {
       this.model = this.row
     }
-    this.model.options = [{
-      key: Date.now(),
-      value: ''
-    }]
   },
   methods: {
     checkParser(rule, value, callback) {
@@ -195,11 +187,11 @@ export default {
     submit() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          const resolvers = []
-          this.parserIds.map(item => {
-            resolvers.push(item.value)
-          })
-          this.model['resolvers'] = resolvers
+          // const resolvers = []
+          // this.parserIds.map(item => {
+          //   resolvers.push(item.value)
+          // })
+          // this.model['resolvers'] = resolvers
           this.$emit('submit', this.model)
         }
       })
@@ -295,7 +287,6 @@ export default {
     margin: 0 50px 20px 50px;
     border-bottom: 1px solid #ebeef5;
     overflow-y: scroll;
-    height: 500px;
   }
   .manage-form__footer {
     margin: 0 50px 0 50px;
@@ -307,7 +298,5 @@ export default {
     overflow: auto;
     height: 400px;
   }
-
-  height: 100%;
 }
 </style>

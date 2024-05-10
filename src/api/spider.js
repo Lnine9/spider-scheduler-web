@@ -46,3 +46,26 @@ export function updateManageSpider(data) {
     data
   })
 }
+
+export function getResolverList() {
+  return request({
+    url: '/spider/resolver_list',
+    method: 'get'
+  })
+}
+
+export function addResolver(data) {
+  return request({
+    url: '/spider/add_resolver',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteResolver(data) {
+  return request({
+    url: '/spider/delete_resolver',
+    method: 'post',
+    data
+  })
+}

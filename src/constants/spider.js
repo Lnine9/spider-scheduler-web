@@ -1,0 +1,40 @@
+export const AN_TYPES = [{
+  value: 'AG_L',
+  label: 'AG_L'
+}, {
+  value: 'CB_E',
+  label: 'CB_E'
+}, {
+  value: 'CB_G',
+  label: 'CB_G'
+}, {
+  value: 'C_A',
+  label: 'C_A'
+}, {
+  value: 'C_G',
+  label: 'C_G'
+}, {
+  value: 'DL',
+  label: 'DL'
+}, {
+  value: 'FB_G',
+  label: 'FB_G'
+}, {
+  value: 'HT_G',
+  label: 'HT_G'
+}, {
+  value: 'I_G',
+  label: 'I_G'
+}, {
+  value: 'MB_G',
+  label: 'MB_G'
+}, {
+  value: 'MED_AN',
+  label: 'MED_AN'
+}, {
+  value: 'RB_E',
+  label: 'RB_E'
+}, {
+  value: 'WB_G',
+  label: 'WB_G'
+}]

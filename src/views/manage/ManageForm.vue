@@ -5,7 +5,8 @@
         ref="form"
         :model="model"
         label-width="120px"
-        label-position="left"
+        label-position="right"
+        size="small"
         :disabled="showModalVisible"
       >
         <el-form-item label="名称" prop="name" required>
@@ -22,12 +23,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="description" required>
-          <el-input v-model="model.description" type="textarea" :rows="2" />
+          <el-input v-model="model.description" type="textarea" :rows="1" />
         </el-form-item>
-        <el-form-item label="主类路径" prop="main_class" required>
+        <el-form-item label="主类名称" prop="main_class" required>
           <el-input v-model="model.main_class" />
         </el-form-item>
-        <el-form-item label="解析器ID数组" prop="resolvers" :rules="resolverRule">
+        <el-form-item label="解析器" prop="resolvers" :rules="resolverRule">
           <el-button type="primary" @click="showUploadModel(true)">上传文件</el-button>
           <template v-for="(item, index) in options">
             <el-form-item
@@ -293,6 +294,8 @@ export default {
     font-weight: 400;
     margin: 0 50px 20px 50px;
     border-bottom: 1px solid #ebeef5;
+    overflow-y: scroll;
+    height: 500px;
   }
   .manage-form__footer {
     margin: 0 50px 0 50px;

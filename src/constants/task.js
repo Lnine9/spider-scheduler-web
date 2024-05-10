@@ -1,11 +1,13 @@
 const PROJECT_STATUS_COLOR_MAP = {
-  0: 'warning',
-  1: 'success',
+  0: 'info',
+  1: 'primary',
+  2: 'warning',
 }
 
 const PROJECT_STATUS_MAP = {
   0: '未完成',
   1: '已完成',
+  2: '子任务异常',
 }
 
 export const projectStatusColorFilter = status => PROJECT_STATUS_COLOR_MAP[status]
@@ -15,7 +17,7 @@ const TASK_STATUS_COLOR_MAP = {
   0: 'info',
   1: 'info',
   2: 'warning',
-  3: 'success',
+  3: 'primary',
   4: 'danger',
 }
 

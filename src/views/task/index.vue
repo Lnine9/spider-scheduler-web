@@ -61,7 +61,7 @@
         <el-table-column label="所属计划" prop="schedule_name" />
         <el-table-column label="状态" align="center">
           <template slot-scope="{row}">
-            <el-tag size="small" :type="row.status | statusColorFilter">{{ row.status | statusFilter }}</el-tag>
+            <el-tag size="small" :type="row.status | projectStatusColorFilter">{{ row.status | projectStatusFilter }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="开始/结束时间" width="180">
@@ -102,6 +102,7 @@
     title="任务详情"
     :visible.sync="detailModalVisible"
     width="60%"
+    v-if="detailModalVisible"
   >
     <ProjectDetail :project-id="detailProjectId" />
   </el-dialog>
@@ -123,27 +124,14 @@ import {addProject, queryProject} from "@/api/task";
 import ProjectDetail from "@/views/task/ProjectDetail.vue";
 import {dateTimeFilter} from "@/utils";
 import ProjectForm from "@/views/task/ProjectForm.vue";
-
-const STATUS_COLOR_MAP = {
-  0: 'warning',
-  1: 'success',
-}
-
-const STATUS_MAP = {
-  0: '未完成',
-  1: '已完成',
-}
-
-const statusColorFilter = status => STATUS_COLOR_MAP[status]
-const statusFilter = status => STATUS_MAP[status]
-
+import {projectStatusFilter, projectStatusColorFilter} from "@/constants/task";
 
 export default {
   name: "index",
   components: {ProjectForm, ProjectDetail, ScheduleSelect, SubjectSelect},
   filters: {
-    statusColorFilter,
-    statusFilter,
+    projectStatusColorFilter,
+    projectStatusFilter,
     dateTimeFilter
   },
   data() {
@@ -156,12 +144,20 @@ export default {
       listLoading: false,
       detailModalVisible: false,
       detailProjectId: null,
-      autoRefresh: false,
+      autoRefresh: true,
       addModalVisible: false,
     }
   },
-  created() {
-    this.search()
+  async created() {
+    const from = this.$route.query.from
+    if (from === 'schedule') {
+      this.filter.schedule_id = this.$route.query.scheduleId
+    }
+    if (from === 'subject') {
+      this.filter.subject_id = this.$route.query.subjectId
+    }
+    await this.search()
+    this.switchAutoRefresh(this.autoRefresh)
   },
   beforeDestroy() {
     clearInterval(this.autoRefreshTimer)

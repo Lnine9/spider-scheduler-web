@@ -93,13 +93,7 @@
         highlight-current-row
       >
         <el-table-column label="ID" prop="id" />
-        <el-table-column label="名称" prop="name" />
-        <el-table-column label="执行节点">
-          <template slot-scope="{row}">
-            <div>{{ row.node_name }}</div>
-            <div>{{ row.node_ip }}</div>
-          </template>
-        </el-table-column>
+        <el-table-column label="执行节点" prop="node_address" />
         <el-table-column label="状态" align="center">
           <template slot-scope="{row}">
             <el-tag size="small" :type="row.status | taskStatusColorFilter">{{ row.status | taskStatusFilter }}</el-tag>
@@ -118,10 +112,14 @@
           </template>
         </el-table-column>
         <el-table-column label="抓取量" prop="total_crawl" />
-        <el-table-column label="耗时" prop="cost_time" />
+        <el-table-column label="耗时">
+          <template slot-scope="{row}">
+            {{ getCostTime(row) }} min
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="{row}">
-            <el-button type="text" @click="showLog(row.id)">日志</el-button>
+            <el-button type="text" @click="showLog(row)">日志</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -153,16 +151,17 @@ export default {
     return {
       project: {},
       taskList: [],
+      autoRefreshTimer: null,
     };
   },
-  watch: {
-    projectId: {
-      handler() {
-        if (!this.projectId) return;
-        this.fetchData();
-      },
-      immediate: true,
-    },
+  created() {
+    this.fetchData();
+    this.autoRefreshTimer = setInterval(() => {
+      this.fetchData();
+    }, 5000);
+  },
+  destroyed() {
+    clearInterval(this.autoRefreshTimer);
   },
   computed: {
     process() {
@@ -184,9 +183,17 @@ export default {
         this.$message.error(e.message);
       }
     },
-    showLog(taskId) {
-
+    showLog(task) {
+      if (task.log_url) {
+        window.open(task.log_url);
+      } else {
+        this.$message.info('暂无日志');
+      }
     },
+    getCostTime(task) {
+      if (!task.start_time || !task.end_time) return 0;
+      return Math.floor((task.end_time - task.start_time) / 1000 / 60);
+    }
   },
 }
 </script>

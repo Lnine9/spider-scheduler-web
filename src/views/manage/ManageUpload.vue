@@ -5,7 +5,7 @@
         ref="form"
         :model="model"
         label-width="100px"
-        label-position="left"
+        label-position="right"
       >
         <el-form-item label="文件" prop="file">
           <el-upload

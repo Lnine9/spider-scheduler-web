@@ -9,7 +9,7 @@
     <div class="subject__content section">
       <div class="subject-list">
         <template v-for="item in list">
-          <div :key="item.id" class="subject-item">
+          <div :key="item.id" class="subject-item" @click="toView(item.id)">
             <div class="cover" />
             <div class="right">
               <div class="subject-item__header">
@@ -117,6 +117,15 @@ export default {
           await this.fetchData()
         } catch (e) {
           this.$message.error(e.message)
+        }
+      })
+    },
+    toView(id) {
+      this.$router.push({
+        name: 'Task',
+        query: {
+          from: 'subject',
+          subjectId: id
         }
       })
     }

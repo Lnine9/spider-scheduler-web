@@ -17,7 +17,7 @@
         fit
         highlight-current-row
       >
-        <el-table-column label="ID" width="100" prop="id" />
+        <el-table-column label="ID" width="150" prop="id" />
         <el-table-column label="名称" width="200" prop="name" />
         <el-table-column label="描述" width="240" prop="description" />
         <el-table-column label="所属专题" width="200" prop="subject_name" />
@@ -43,7 +43,7 @@
                 <el-button size="small" icon="el-icon-video-pause" @click="pause(row.id)" ></el-button>
               </el-tooltip>
               <el-tooltip effect="dark" content="查看记录">
-                <el-button type="info" size="small" icon="el-icon-s-data" ></el-button>
+                <el-button type="info" size="small" icon="el-icon-s-data" @click="toView(row.id)" ></el-button>
               </el-tooltip>
               <el-tooltip effect="dark" content="编辑">
                 <el-button size="small" @click="showEditModal(row)" icon="el-icon-edit-outline"></el-button>
@@ -229,6 +229,15 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val
       this.fetchData()
+    },
+    toView(id) {
+      this.$router.push({
+        name: 'Task',
+        query: {
+          from: 'schedule',
+          scheduleId: id
+        }
+      })
     }
   }
 }

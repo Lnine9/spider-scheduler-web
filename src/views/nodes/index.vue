@@ -56,6 +56,9 @@
                 </div>
               </div>
             </div>
+            <div class="view">
+              <iframe :src="activeNodeDetail.address" frameborder="0" width="100%" height="100%" />
+            </div>
           </template>
         </template>
       </div>
@@ -100,7 +103,7 @@ export default {
   },
   created() {
     this.fetchData()
-    // this.initAutoRefresh()
+    this.initAutoRefresh()
   },
   beforeDestroy() {
     clearInterval(this.autoRefreshListTimer)
@@ -247,12 +250,21 @@ export default {
       padding: 16px;
       margin: 10px;
       height: 100%;
+      display: flex;
+      flex-direction: column;
 
       .hardware {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 14px;
-        margin-bottom: 20px;
+      }
+
+      .view {
+        flex: 1;
+        margin-top: 20px;
+        border: 2px solid #6a6868;
+        border-radius: 6px;
+        overflow: hidden;
       }
 
       .pane {

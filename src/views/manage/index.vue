@@ -1,9 +1,10 @@
 <template>
   <div class="manage__container">
-    <div class="section">
-      <div class="manage__header">
+    <div class="manage__header">
+      <div class="content">
         <el-button type="primary" size="medium" @click="addModel()">新增爬虫</el-button>
       </div>
+      <div class="illustration" />
     </div>
     <div class="section">
       <div class="manage__content">
@@ -18,6 +19,8 @@
             <el-table-column width="200" prop="id" label="ID" />
             <el-table-column width="250" prop="name" label="名称" />
             <el-table-column prop="description" label="描述" />
+            <el-table-column prop="an_type" label="公共类型" />
+            <el-table-column prop="url" label="目标网站" />
             <el-table-column width="250px" label="操作" align="center">
               <template slot-scope="scope">
                 <el-tooltip effect="dark" content="details">
@@ -195,9 +198,27 @@ export default {
 
 .manage__container {
   .manage__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: white;
+    margin: 10px;
+    padding: 4px;
+
+    .content {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    .illustration {
+      background: url("~@/assets/svg/bug.svg") right no-repeat;
+      background-size: contain;
+      height: 100%;
+      min-height: 100px;
+    }
 
     .manage-text {
       font-size: 25px;
@@ -214,7 +235,7 @@ export default {
     .pagination {
       margin-top: 20px;
       display: flex;
-      justify-content: center;
+      justify-content: flex-end;
     }
   }
 

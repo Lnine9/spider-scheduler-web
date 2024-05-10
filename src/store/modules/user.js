@@ -1,6 +1,7 @@
 import { login } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import CryptoJS from 'crypto-js'
 
 const getDefaultState = () => {
   return {
@@ -31,8 +32,9 @@ const actions = {
   // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo
+    const encodePassword = CryptoJS.SHA256(password).toString()
     return new Promise((resolve, reject) => {
-      login({ user_name: username.trim(), password: password }).then(response => {
+      login({ user_name: username.trim(), password: encodePassword }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)

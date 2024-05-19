@@ -2,7 +2,7 @@
   <div class="spider__container">
     <div class="spider__header">
       <div class="content">
-        <el-button type="primary" size="medium" @click="addModel()">新增爬虫</el-button>
+        <el-button type="primary" @click="addModel()" icon="el-icon-plus">新增爬虫</el-button>
       </div>
       <div class="illustration" />
     </div>
@@ -18,15 +18,11 @@
               <el-table-column width="200" prop="id" label="ID" />
               <el-table-column width="250" prop="name" label="名称" />
               <el-table-column prop="description" label="描述" />
-              <el-table-column prop="an_type" label="公共类型" />
+              <el-table-column prop="an_type" label="爬虫类型" />
               <el-table-column width="250px" label="操作" align="center">
                 <template slot-scope="scope">
-                  <el-tooltip effect="dark" content="edit">
-                    <el-button type="text" @click="showEditPop(scope)">编辑</el-button>
-                  </el-tooltip>
-                  <el-tooltip effect="dark" content="delete">
-                    <el-button style="color: #e53b6e" type="text" @click="deleteManageSpider(scope)">删除</el-button>
-                  </el-tooltip>
+                  <el-button type="text" @click="showEditPop(scope)">编辑</el-button>
+                  <el-button style="color: #e53b6e" type="text" @click="deleteManageSpider(scope)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -76,13 +72,13 @@
 
 <script>
 import { addManageSpider, deleteManageSpider, getManageSpiderList, updateManageSpider } from '@/api/spider'
-import SpiderForm from "@/views/spider/SpiderForm.vue";
 import {simpleClone} from "@/utils";
 import ResolverList from "@/views/spider/ResolverList.vue";
+import SpiderForm from "@/views/spider/SpiderForm.vue";
 
 export default {
   name: 'Manage',
-  components: {ResolverList, SpiderForm },
+  components: { ResolverList, SpiderForm },
   data() {
     return {
       list: [],
@@ -213,7 +209,7 @@ export default {
   .main_content {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 400px;
+    grid-template-columns: 1fr 500px;
   }
 
   .spider__content {

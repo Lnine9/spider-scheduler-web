@@ -11,8 +11,8 @@
           <el-form-item label="任务名称" prop="name" required>
             <el-input v-model="model.name" placeholder="请输入任务名称"></el-input>
           </el-form-item>
-          <el-form-item label="爬虫ID" prop="spider_id" required>
-            <el-input v-model="model.spider_id"  placeholder="请输入爬虫ID"></el-input>
+          <el-form-item label="爬虫" prop="spider_id" required>
+            <SpiderSelect v-model="model.spider_id" />
           </el-form-item>
           <el-form-item label="所属专题" prop="subject_id">
             <SubjectSelect v-model="model.subject_id" />
@@ -50,10 +50,11 @@
 
 <script>
 import SubjectSelect from "@/components/SubjectSelect/index.vue";
+import SpiderSelect from "@/components/SpiderSelect/index.vue";
 
 export default {
   name: "ProjectForm",
-  components: {SubjectSelect},
+  components: {SpiderSelect, SubjectSelect},
   data() {
     return {
       model: {},

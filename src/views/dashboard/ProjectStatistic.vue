@@ -38,6 +38,7 @@
     title="任务详情"
     :visible.sync="detailModalVisible"
     width="60%"
+    v-if="detailModalVisible"
   >
     <ProjectDetail :project-id="detailProjectId" />
   </el-dialog>
@@ -149,7 +150,7 @@ export default {
       try {
         this.loading = true;
         const {data} = await StatisticApi.runningProjects();
-        this.projects = formatProjectStatistics(mockData);
+        this.projects = formatProjectStatistics(data);
       } catch (e) {
         this.$message.error(e.message);
         console.error(e)

@@ -177,8 +177,8 @@ export default {
           end_time: this.filter.range[1],
         }
         this.loading = true
-        const response = await StatisticApi.scheduleStatistic(params);
-        this.scheduleStatistics = mockData;
+        const {data} = await StatisticApi.scheduleStatistic(params);
+        this.scheduleStatistics = formatScheduleStatistics(data);
       } catch (error) {
         this.$message.error(`获取数据失败: ${error.message}`);
       } finally {

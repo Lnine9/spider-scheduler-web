@@ -14,15 +14,13 @@
             <div class="right">
               <div class="subject-item__header">
                 <div class="subject-item__title">{{ item.name }}</div>
-                <div class="subject-item__action">
-                  <el-button type="text" icon="el-icon-edit" @click="showEditModal(item)">编辑</el-button>
-                  <el-button type="text" icon="el-icon-delete" @click="deleteSubject(item)">删除</el-button>
-                </div>
-              </div>
-              <div class="subject-item__content">
                 <div class="subject-item__desc">{{ item.description }}</div>
               </div>
               <div class="subject-item__footer">
+                <div class="subject-item__action">
+                  <el-button type="text" icon="el-icon-edit" @click.stop="showEditModal(item)">编辑</el-button>
+                  <el-button type="text" icon="el-icon-delete" @click.stop="deleteSubject(item)">删除</el-button>
+                </div>
                 <div class="subject-item__id"># {{ item.id }}</div>
               </div>
             </div>
@@ -187,34 +185,25 @@ export default {
         .cover {
           background: url("~@/assets/svg/book.svg") center no-repeat;
           background-size: contain;
-          height: 100%;
+          height: 80%
         }
 
         .right {
-          display: grid;
-          grid-template-rows: 60px 1fr 24px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
         }
 
         .subject-item__header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
           padding: 10px;
+          margin-top: 10px;
 
           .subject-item__title {
             font-size: 18px;
             font-weight: bold;
+            margin-bottom: 8px;
+            height: 46px;
           }
-
-          .subject-item__action {
-            display: flex;
-            gap: 10px;
-          }
-        }
-
-        .subject-item__content {
-          padding: 10px;
-
           .subject-item__desc {
             font-size: 12px;
             color: #9d9c9c;

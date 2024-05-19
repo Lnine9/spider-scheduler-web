@@ -4,7 +4,8 @@ export function getNodeList(params) {
   return request({
     url: "/scrapyd/list",
     method: "get",
-    params
+    params,
+    timeout: 60 * 1000
   });
 }
 
@@ -29,5 +30,14 @@ export function deleteNode(data) {
     url: "/scrapyd/delete",
     method: "post",
     data
+  });
+}
+
+export function updateEgg(data) {
+  return request({
+    url: "/scrapyd/update_egg",
+    method: "post",
+    data,
+    timeout: 60 * 1000
   });
 }

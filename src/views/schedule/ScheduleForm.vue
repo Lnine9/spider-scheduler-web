@@ -20,8 +20,8 @@
           <el-form-item label="Cron" prop="cron" required>
             <el-input v-model="model.cron"></el-input>
           </el-form-item>
-          <el-form-item label="爬虫ID" prop="spider_id" required>
-            <el-input :disabled="isEdit" v-model="model.spider_id"></el-input>
+          <el-form-item label="爬虫" prop="spider_id" required>
+            <SpiderSelect :disabled="isEdit" v-model="model.spider_id"></SpiderSelect>
           </el-form-item>
           <el-form-item label="切片大小" prop="slice_size" required>
             <div class="form-item-slice-size">
@@ -40,10 +40,11 @@
 
 <script>
 import SubjectSelect from "@/components/SubjectSelect/index.vue";
+import SpiderSelect from "@/components/SpiderSelect/index.vue";
 
 export default {
   name: "ScheduleForm",
-  components: {SubjectSelect},
+  components: {SpiderSelect, SubjectSelect},
   props: {
     type: {
       type: String,

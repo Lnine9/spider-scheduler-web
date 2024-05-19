@@ -17,7 +17,7 @@
         fit
         highlight-current-row
       >
-        <el-table-column label="ID" width="150" prop="id" />
+        <el-table-column label="ID" width="160" prop="id" />
         <el-table-column label="名称" width="200" prop="name" />
         <el-table-column label="描述" width="240" prop="description" />
         <el-table-column label="所属专题" width="200" prop="subject_name" />

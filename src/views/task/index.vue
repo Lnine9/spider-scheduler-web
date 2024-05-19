@@ -144,7 +144,7 @@ export default {
       listLoading: false,
       detailModalVisible: false,
       detailProjectId: null,
-      autoRefresh: true,
+      autoRefresh: false,
       addModalVisible: false,
     }
   },

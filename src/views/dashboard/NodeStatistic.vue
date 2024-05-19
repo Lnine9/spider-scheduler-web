@@ -1,6 +1,6 @@
 <template>
 <div class="node-statistic">
-  <div class="node-list">
+  <div class="node-list" v-loading="loading">
     <template v-for="item in list">
       <div
         :key="item.id"
@@ -48,6 +48,7 @@ export default {
       activeNode: null,
       activeNodeDetail: null,
       detailLoading: false,
+      loading: false,
     };
   },
   created() {
@@ -59,10 +60,13 @@ export default {
     },
     async fetchData() {
       try {
+        this.loading = true
         const {data} = await getNodeList()
         this.list = data.list
       } catch (e) {
         console.error(e)
+      } finally {
+        this.loading = false
       }
     },
   }

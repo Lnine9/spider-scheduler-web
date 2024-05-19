@@ -3,18 +3,18 @@
     v-bind="$attrs"
     v-model="bindValue"
     v-loading="loading"
-    class="resolver-select"
-    placeholder="请选择解析器"
+    class="spider-select"
+    placeholder="请选择爬虫"
     filterable
   >
     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
   </el-select>
 </template>
 <script>
-import { getResolverList } from '@/api/spider';
+import { getManageSpiderList } from '@/api/spider';
 
 export default {
-  name: 'ResolverSelect',
+  name: 'SpiderSelect',
   props: {
     value: {
       type: [String, Number],
@@ -22,7 +22,7 @@ export default {
   },
   data() {
     return {
-      resolverList: [],
+      spiderList: [],
       options: [],
       loading: false,
     };
@@ -45,16 +45,19 @@ export default {
       this.$emit('input', val);
       this.$emit(
         'select-extra',
-        this.resolverList.find((item) => item.id === val),
+        this.spiderList.find((item) => item.id === val),
       );
     },
     async fetchData() {
       this.loading = true;
       try {
-        const { data } = await getResolverList();
+        const { data } = await getManageSpiderList({
+          page_no: 1,
+          page_size: 1000,
+        });
         if (!data) return;
-        this.resolverList = data.list;
-        this.options = data.list.map((item) => ({
+        this.spiderList = data.spider_info;
+        this.options = this.spiderList.map((item) => ({
           label: item.name,
           value: item.id,
         }));

@@ -112,6 +112,7 @@
           </template>
         </el-table-column>
         <el-table-column label="抓取量" prop="total_crawl" />
+        <el-table-column label="解析量" prop="total_resolve" />
         <el-table-column label="耗时">
           <template slot-scope="{row}">
             {{ getCostTime(row) }} min
@@ -191,8 +192,11 @@ export default {
       }
     },
     getCostTime(task) {
-      if (!task.start_time || !task.end_time) return 0;
-      return Math.floor((task.end_time - task.start_time) / 1000 / 60);
+      if (!task.start_time) return 0;
+      if (!task.end_time) {
+        return Math.floor((new Date().getTime()/1000 - task.start_time) / 60);
+      }
+      return Math.floor((task.end_time - task.start_time) / 60);
     }
   },
 }

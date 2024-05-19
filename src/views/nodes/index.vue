@@ -3,6 +3,7 @@
     <div class="nodes__header">
       <div class="content">
         <el-button type="primary" @click="showAddModal" icon="el-icon-plus">新增节点</el-button>
+        <el-button type="primary" @click="updateEggModalVisible = true" icon="el-icon-upload">更新项目</el-button>
       </div>
       <div class="illustration" />
     </div>
@@ -63,16 +64,45 @@
         </template>
       </div>
     </div>
+    <el-dialog
+      title="新增节点"
+      :visible.sync="addModalVisible"
+      width="640px"
+    >
+      <NodeForm @submit="handleSubmitAddNode" />
+    </el-dialog>
+
+    <el-dialog
+      v-if="updateEggModalVisible"
+      title="更新项目文件"
+      :visible.sync="updateEggModalVisible"
+      width="500px"
+    >
+      <DeployForm @submit="handleUpdateEggSubmit" />
+    </el-dialog>
+
+    <el-dialog
+      :visible.sync="deployLoading"
+      width="300px"
+      title="项目部署中"
+      :close-on-press-escape="false"
+      :show-close="false"
+      :close-on-click-modal="false"
+    >
+      <el-progress :percentage="deployProgress" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import {getNodeList, getNodeDetail, addNode, deleteNode} from "@/api/node";
+import {getNodeList, getNodeDetail, addNode, deleteNode, updateEgg} from "@/api/node";
+import NodeForm from "@/views/nodes/NodeForm.vue";
+import DeployForm from "@/views/nodes/DeployForm.vue";
 
 const NODE_STATUS_COLOR_MAP = {
   0: "#909399",
   1: "#67C23A",
-  2: "#F56C6C"
+  2: "#F56C6C",
 }
 
 const STATUS_MAP = {
@@ -86,6 +116,7 @@ const statusFilter = (status) => {
 
 export default {
   name: "index",
+  components: {DeployForm, NodeForm},
   filters: {
     statusFilter
   },
@@ -98,7 +129,10 @@ export default {
       activeNodeDetail: null,
       detailLoading: false,
       autoRefreshListTimer: null,
-      autoRefreshDetailTimer: null
+      autoRefreshDetailTimer: null,
+      updateEggModalVisible: false,
+      deployLoading: false,
+      deployProgress: 0
     }
   },
   created() {
@@ -156,6 +190,42 @@ export default {
       this.activeNode = item.id
       this.fetchDetailData()
     },
+    async handleSubmitAddNode(data, callback) {
+      try {
+        await addNode(data)
+        this.$message.success("新增成功")
+        this.addModalVisible = false
+        await this.fetchData()
+      } catch (e) {
+        this.$message.error(e.message)
+      } finally {
+        callback()
+      }
+    },
+    async handleUpdateEggSubmit(egg) {
+      try {
+        this.deployLoading = true
+        const total = this.list.filter(node => node.status === 1).length
+        let count = 0
+        this.deployProgress = 0
+        for (let node of this.list) {
+          if (node.status === 1) {
+            const formData = new FormData()
+            formData.append("egg", egg)
+            formData.append("id", node.id)
+            await updateEgg(formData)
+            count ++
+            this.deployProgress = count / total * 100
+          }
+        }
+        this.$message.success("更新成功")
+        this.updateEggModalVisible = false
+      } catch (e) {
+        this.$message.error(e.message)
+      } finally {
+        this.deployLoading = false
+      }
+    }
   }
 }
 </script>
@@ -262,8 +332,9 @@ export default {
       .view {
         flex: 1;
         margin-top: 20px;
-        border: 2px solid #6a6868;
+        border: 1px solid #ededed;
         border-radius: 6px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         overflow: hidden;
       }
 

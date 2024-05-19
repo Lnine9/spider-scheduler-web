@@ -1,7 +1,15 @@
 <template>
   <div class="resolver-list">
+    <div class="search">
+      <el-input
+        prefix-icon="el-icon-search"
+        v-model="search"
+        placeholder="请输入解析器名称"
+        clearable
+      />
+    </div>
     <div class="list" v-loading="loading">
-      <div class="resolver-item" v-for="item in resolverList" :key="item.id">
+      <div class="resolver-item" v-for="item in filteredList" :key="item.id">
         <div class="left">
           <div class="border" />
           <div class="type">【{{ item.type }}】</div>
@@ -40,10 +48,18 @@ export default {
       resolverList: [],
       addModalVisible: false,
       loading:false,
+      total: 0,
+      currentPage: 1,
+      search: '',
     }
   },
   created() {
     this.fetchData()
+  },
+  computed: {
+    filteredList() {
+      return this.resolverList.filter(item => item.name.toLowerCase().includes(this.search.toLowerCase()))
+    }
   },
   methods: {
     async fetchData() {
@@ -96,13 +112,14 @@ export default {
 .resolver-list {
   display: grid;
   height: 100%;
-  grid-template-rows: 1fr 30px;
+  grid-template-rows: 50px 1fr 40px;
+  width: 100%;
 
   .tool-bar {
     .add-box {
       font-size: 12px;
       width: 100%;
-      height: 30px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -111,10 +128,13 @@ export default {
 
   .list {
     overflow-y: auto;
-    padding: 4px 0;
+    width: 100%;
+    height: 720px;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1) inset;
+    padding: 4px;
     .resolver-item {
       border-radius: 4px;
-      margin-bottom: 9px;
+      margin-bottom: 12px;
       display: grid;
       grid-template-columns: 1fr 40px;
       align-items: center;
@@ -122,6 +142,7 @@ export default {
       font-size: 14px;
       color: #474b56;
       background-color: #ecf7ff;
+      width: 100%;
 
       .left {
         display: flex;
@@ -135,6 +156,14 @@ export default {
         .type {
           font-weight: bold;
           margin-right: 4px;
+          width: 120px;
+          overflow: hidden;
+          text-overflow:ellipsis; white-space: nowrap;
+        }
+        .name {
+          width: 250px;
+          overflow: hidden;
+          text-overflow:ellipsis; white-space: nowrap;
         }
       }
       .right {

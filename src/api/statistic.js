@@ -15,3 +15,11 @@ export function runningProjects(params){
     params
   })
 }
+
+export function last24hTaskCount(params){
+  return request({
+    url: '/statistic/last_24h_task_count',
+    method: 'get',
+    params
+  })
+}

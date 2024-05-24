@@ -14,22 +14,22 @@
             <el-switch class="auto-refresh" v-model="autoRefresh" active-text="自动刷新(5s)" @change="switchAutoRefresh" />
           </div>
         </el-form-item>
-        <el-form-item label="名称">
+        <el-form-item label="名称" prop="name">
           <el-input v-model="filter.name" placeholder="请输入名称" clearable />
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="subject_id">
           <template v-slot:label>
             <i class="el-icon-collection" /> 所属专题
           </template>
           <SubjectSelect v-model="filter.subject_id" placeholder="请选择专题" clearable />
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="schedule_id">
           <template v-slot:label>
             <i class="el-icon-timer" /> 所属计划
           </template>
           <ScheduleSelect v-model="filter.schedule_id" placeholder="请选择计划" clearable />
         </el-form-item>
-        <el-form-item label="创建时间">
+        <el-form-item label="创建时间" prop="create_time">
           <el-date-picker
             v-model="filter.create_time"
             type="datetimerange"
@@ -150,12 +150,14 @@ export default {
   },
   async created() {
     const from = this.$route.query.from
+    const defaultFilter = {}
     if (from === 'schedule') {
-      this.filter.schedule_id = this.$route.query.scheduleId
+      defaultFilter.schedule_id = this.$route.query.scheduleId
     }
     if (from === 'subject') {
-      this.filter.subject_id = this.$route.query.subjectId
+      defaultFilter.subject_id = this.$route.query.subjectId
     }
+    this.filter = defaultFilter
     await this.search()
     this.switchAutoRefresh(this.autoRefresh)
   },

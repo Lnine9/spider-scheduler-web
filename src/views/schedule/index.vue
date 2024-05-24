@@ -28,18 +28,23 @@
             {{ row.last_run_time | dateTimeFilter }}
           </template>
         </el-table-column>
+        <el-table-column label="最近抓取公告时间" width="200">
+          <template slot-scope="{row}">
+            {{ row.last_crawl_time | dateTimeFilter }}
+          </template>
+        </el-table-column>
         <el-table-column label="状态" width="100" prop="status" align="center">
           <template slot-scope="{row}">
             <el-tag :type="row.status | statusColorFilter">{{ row.status | statusFilter }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" :min-width="200" fixed="right">
+        <el-table-column label="操作" align="center" :min-width="260" fixed="right">
           <template slot-scope="{row}">
             <div class="operator">
-              <el-tooltip effect="dark" content="开启">
+              <el-tooltip effect="dark" content="开启" v-if="row.status === 0">
                 <el-button type="primary" size="small" icon="el-icon-video-play" @click="resume(row.id)" ></el-button>
               </el-tooltip>
-              <el-tooltip effect="dark" content="暂停">
+              <el-tooltip effect="dark" content="暂停" v-if="row.status === 1">
                 <el-button size="small" icon="el-icon-video-pause" @click="pause(row.id)" ></el-button>
               </el-tooltip>
               <el-tooltip effect="dark" content="查看记录">

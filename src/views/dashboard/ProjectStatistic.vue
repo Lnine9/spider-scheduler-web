@@ -32,6 +32,9 @@
         </div>
       </div>
     </template>
+    <div class="empty" v-if="!projects || projects.length === 0">
+      <img src="@/assets/svg/empty.svg" />
+    </div>
   </div>
 
   <el-dialog
@@ -140,10 +143,17 @@ export default {
       loading: false,
       detailModalVisible: false,
       detailProjectId: null,
+      autoRefreshTimer: null,
     };
   },
   created() {
     this.fetchData();
+    this.autoRefreshTimer = setInterval(() => {
+      this.fetchData();
+    }, 3000);
+  },
+  destroyed() {
+    clearInterval(this.autoRefreshTimer);
   },
   methods: {
     async fetchData() {
@@ -171,7 +181,7 @@ export default {
   .list {
     .list-header {
       display: grid;
-      grid-template-columns: repeat(3, 1fr) 60px;
+      grid-template-columns: 3fr 2fr 2fr 60px;
       align-items: center;
       padding-left: 20px;
       height: 40px;
@@ -182,6 +192,18 @@ export default {
       border-radius: 5px;
       margin-bottom: 10px;
     }
+
+    .empty {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 300px;
+      img {
+        width: 200px;
+        height: 200px;
+      }
+    }
+
     .item {
       height: 60px;
       border: 1px solid #ebeef5;
@@ -200,9 +222,15 @@ export default {
       .content {
         padding-left: 20px;
         display: grid;
-        grid-template-columns: repeat(3, 1fr) 60px;
+        grid-template-columns: 3fr 2fr 2fr 60px;
         align-items: center;
         flex: 1;
+        font-size: 12px;
+        color: #333;
+
+        .name {
+          padding-right: 6px;
+        }
 
         .blocks {
           display: grid;

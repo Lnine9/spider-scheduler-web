@@ -27,18 +27,18 @@
         <el-form-item label="主类名称" prop="main_class" required>
           <el-input v-model="model.main_class" placeholder="请输入主类名称" />
         </el-form-item>
-        <el-form-item label="初始URL" prop="url" required>
-          <el-input v-model="model.url" placeholder="请输入初始请求URL" />
-        </el-form-item>
-        <el-form-item label="请求方式" prop="method" required>
-          <el-select v-model="model.method" placeholder="请选择方式">
-            <el-option :label="'GET'" :value="'GET'" />
-            <el-option :label="'POST'" :value="'POST'" />
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="model.method === 'POST'" label="请求体" prop="body">
-          <el-input type="textarea" :rows="2" v-model="model.body" placeholder="请输入请求体" />
-        </el-form-item>
+<!--        <el-form-item label="初始URL" prop="url" required>-->
+<!--          <el-input v-model="model.url" placeholder="请输入初始请求URL" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="请求方式" prop="method" required>-->
+<!--          <el-select v-model="model.method" placeholder="请选择方式">-->
+<!--            <el-option :label="'GET'" :value="'GET'" />-->
+<!--            <el-option :label="'POST'" :value="'POST'" />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="请求体" prop="body">-->
+<!--          <el-input type="textarea" :rows="2" v-model="model.body" placeholder="请输入请求体" />-->
+<!--        </el-form-item>-->
         <el-form-item label="解析器" prop="resolvers" required>
           <ResolverArrayEditor name="resolvers" :value.async="model.resolvers" />
         </el-form-item>
@@ -141,7 +141,7 @@ export default {
   }
   .spider-form__footer {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
   }
 }
 </style>

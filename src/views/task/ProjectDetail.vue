@@ -92,8 +92,8 @@
         size="small"
         highlight-current-row
       >
-        <el-table-column label="ID" prop="id" />
-        <el-table-column label="执行节点" prop="node_address" />
+        <el-table-column label="ID" prop="id" :width="140" />
+        <el-table-column label="执行节点" prop="node_address" :width="140" />
         <el-table-column label="状态" align="center">
           <template slot-scope="{row}">
             <el-tag size="small" :type="row.status | taskStatusColorFilter">{{ row.status | taskStatusFilter }}</el-tag>
@@ -115,7 +115,7 @@
         <el-table-column label="解析量" prop="total_resolve" />
         <el-table-column label="耗时">
           <template slot-scope="{row}">
-            {{ getCostTime(row) }} min
+            {{ getCostTime(row).min }} m {{ getCostTime(row).sec }} s
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -159,7 +159,7 @@ export default {
     this.fetchData();
     this.autoRefreshTimer = setInterval(() => {
       this.fetchData();
-    }, 5000);
+    }, 3000);
   },
   destroyed() {
     clearInterval(this.autoRefreshTimer);
@@ -194,9 +194,16 @@ export default {
     getCostTime(task) {
       if (!task.start_time) return 0;
       if (!task.end_time) {
-        return Math.floor((new Date().getTime()/1000 - task.start_time) / 60);
+        const min = Math.floor((new Date().getTime()/1000 - task.start_time) / 60)
+        const sec = Math.floor((new Date().getTime()/1000 - task.start_time) % 60)
+        return {
+          min: min > 0 ? min : 0,
+          sec: sec > 0 ? sec : 0
+        };
       }
-      return Math.floor((task.end_time - task.start_time) / 60);
+      const min = Math.floor((task.end_time - task.start_time) / 60);
+      const sec = Math.floor((task.end_time - task.start_time) % 60);
+      return {min, sec};
     }
   },
 }

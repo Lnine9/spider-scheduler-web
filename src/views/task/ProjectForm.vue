@@ -17,6 +17,12 @@
           <el-form-item label="所属专题" prop="subject_id">
             <SubjectSelect v-model="model.subject_id" />
           </el-form-item>
+          <el-form-item label="抓取模式" prop="mode">
+            <el-radio-group v-model="model.mode">
+              <el-radio :label="1">增量</el-radio>
+              <el-radio :label="2">范围</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item label="开始时间" prop="range_start_time" required>
             <el-date-picker
               v-model="model.range_start_time"
@@ -57,7 +63,10 @@ export default {
   components: {SpiderSelect, SubjectSelect},
   data() {
     return {
-      model: {},
+      model: {
+        slice_size: 0,
+        mode: 2
+      },
       loading: false
     }
   },
@@ -120,7 +129,7 @@ export default {
   }
   .project-form__footer {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
   }
 }
 </style>

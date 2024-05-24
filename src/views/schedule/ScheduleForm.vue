@@ -23,12 +23,12 @@
           <el-form-item label="爬虫" prop="spider_id" required>
             <SpiderSelect :disabled="isEdit" v-model="model.spider_id"></SpiderSelect>
           </el-form-item>
-          <el-form-item label="切片大小" prop="slice_size" required>
-            <div class="form-item-slice-size">
-              <el-input-number :step="1" :min="0" v-model="model.slice_size"></el-input-number>
-              <div class="desc">单位（min）,值为0时不切片</div>
-            </div>
-          </el-form-item>
+<!--          <el-form-item label="切片大小" prop="slice_size" required>-->
+<!--            <div class="form-item-slice-size">-->
+<!--              <el-input-number :step="1" :min="0" v-model="model.slice_size"></el-input-number>-->
+<!--              <div class="desc">单位（min）,值为0时不切片</div>-->
+<!--            </div>-->
+<!--          </el-form-item>-->
         </el-form>
       </div>
     </div>
@@ -77,6 +77,8 @@ export default {
     submit() {
       this.$refs.form.validate(valid => {
         if (valid) {
+          // todo: 任务拆分
+          this.model.slice_size = 0
           this.$emit('submit', this.model)
         }
       })

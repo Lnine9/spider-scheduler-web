@@ -1,7 +1,7 @@
 <template>
 <div class="schedule-statistic">
   <div class="filter">
-    <el-form inline :model="filter" ref="filterForm">
+    <el-form inline :model="filter" size="small" ref="filterForm">
       <el-form-item label="统计范围">
         <el-date-picker
           v-model="filter.range"
@@ -23,7 +23,7 @@
     </el-form>
   </div>
   <div class="chart-container" v-loading="loading">
-    <div id="chart" style="width: 100%; height: 300px" />
+    <div id="chart" style="width: 100%; height: 360px" />
   </div>
 </div>
 </template>
@@ -44,7 +44,7 @@ const Mode = {
   crawlCount: 'crawl_count',
   resolveCount: 'resolve_count',
   projectCount: 'project_count',
-  aveRunTime: 'ave_run_time_min',
+  aveRunTime: 'ave_run_time',
 }
 
 const OPTIONS_MAP = {
@@ -72,10 +72,26 @@ const OPTIONS_MAP = {
   [Mode.aveRunTime]: {
     title: '定时计划平均运行时间统计',
     yAxis: {
-      name: '平均运行时间(分钟)',
+      name: '平均运行时间(秒)',
       type: 'value',
     },
   },
+}
+
+const makeMultiLine = (str, charQty) => {
+  const strs = str.split('')
+  const len = strs.length
+  if (len < charQty + 1) {
+    return str
+  }
+  let result = ''
+  strs.forEach((_, index) => {
+    result += _
+    if ((index + 1) % charQty === 0 && index < len - 1) {
+      result += '\n'
+    }
+  })
+  return result
 }
 
 const DEFAULT_OPTIONS = {
@@ -88,13 +104,37 @@ const DEFAULT_OPTIONS = {
   grid: {
     left: 70,
     right: 80,
-    bottom: 20,
+    bottom: 60,
     top: 60,
+  },
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'shadow'
+    },
+    formatter: (params) => {
+      const {name, value} = params[0];
+      return `<div>
+          <span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:#2d8cf0;"></span>
+          <span>${value}</span>
+      </div>`
+    }
   },
   xAxis: {
     type: 'category',
-    name: '定时计划',
     data: [],
+    axisLine:{
+      show:false //不显示横轴线
+    },
+    axisTick: {
+      alignWithLabel: true, //柱状图中心是否对齐刻度位置
+      show: false //不显示刻度
+    },
+    axisLabel: {
+      show:true,
+      formatter: (value) => makeMultiLine(value, 7),
+      interval: 0
+    },
   },
   yAxis: {
     type: 'value',
@@ -189,12 +229,14 @@ export default {
       const chart = Echarts.init(document.getElementById("chart"));
       this.chartOptions = DEFAULT_OPTIONS;
       this.chartOptions.title.text = OPTIONS_MAP[mode].title;
-      this.chartOptions.xAxis.data = this.scheduleStatistics.map(item => item.scheduleName);
+      const temp = [...this.scheduleStatistics].sort((a, b) => b[mode] - a[mode]).slice(0,8);
+      console.log(temp)
+      this.chartOptions.xAxis.data = temp.map(item => item.scheduleName);
       this.chartOptions.yAxis = OPTIONS_MAP[mode].yAxis;
       this.chartOptions.series = [{
         type: "bar",
-        data: this.scheduleStatistics.map(item => item[mode]),
-        barMaxWidth: 60,
+        data: temp.map(item => item[mode]),
+        barMaxWidth: 40,
         itemStyle: {
           color: '#2d8cf0',
         },

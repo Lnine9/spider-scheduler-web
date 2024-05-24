@@ -1,13 +1,18 @@
 <template>
 <div class="node-statistic">
-  <div class="node-list" v-loading="loading">
+  <div class="node-list">
     <template v-for="item in list">
       <div
         :key="item.id"
         class="node-item"
       >
         <div class="address">
-          {{ item.address }}
+          <img src="@/assets/svg/cloudserver.svg" />
+          {{ formatAddress(item.address) }}
+        </div>
+        <div class="process">
+          <i class="el-icon-cpu">CPU</i>
+          <el-progress :percentage="parseInt(item.cpu_percent)" :stroke-width="10" />
         </div>
         <div class="status">
           <div class="status-dot" :style="{backgroundColor: getNodeStatusColor(item.status)}"></div>
@@ -49,10 +54,17 @@ export default {
       activeNodeDetail: null,
       detailLoading: false,
       loading: false,
+      autoRefreshTimer: null,
     };
   },
   created() {
-    this.fetchData();
+    this.fetchData()
+    this.autoRefreshTimer = setInterval(() => {
+      this.fetchData()
+    }, 3000)
+  },
+  destroyed() {
+    clearInterval(this.autoRefreshTimer)
   },
   methods: {
     getNodeStatusColor(status) {
@@ -68,6 +80,9 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    formatAddress(address) {
+      return address.replace('http://', '').replace('https://', '')
     },
   }
 }
@@ -92,6 +107,7 @@ export default {
       border: 1px solid #ededed;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       transition: all 0.2s;
+      color: #333;
 
       &:hover {
         background-color: #e1e1e8;
@@ -105,6 +121,24 @@ export default {
 
       .address {
         flex: 1;
+        display: flex;
+        img {
+          width: 20px;
+          height: 20px;
+          margin-right: 6px;
+        }
+      }
+      .process {
+        width: 200px;
+        display: flex;
+        align-items: center;
+        color: #333;
+        font-size: 14px;
+
+        .el-progress {
+          margin-left: 6px;
+          width: 150px;
+        }
       }
       .status {
         width: 80px;

@@ -47,6 +47,9 @@ module.exports = {
       }
     }
   },
+  css: {
+    extract: false,
+  },
   chainWebpack(config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload
     config.plugin('preload').tap(() => [
@@ -78,6 +81,8 @@ module.exports = {
         symbolId: 'icon-[name]'
       })
       .end()
+
+    config.performance.maxAssetSize(204800000).maxEntrypointSize(204800000)
 
     config
       .when(process.env.NODE_ENV !== 'development',

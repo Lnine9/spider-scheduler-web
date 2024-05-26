@@ -58,7 +58,45 @@
               </div>
             </div>
             <div class="view">
-              <iframe :src="activeNodeDetail.address" frameborder="0" width="100%" height="100%" />
+<!--              <iframe :src="activeNodeDetail.address" frameborder="0" width="100%" height="100%" />-->
+              <el-table
+                :data="activeNodeDetail.jobs.list"
+                style="width: 100%"
+                stripe
+                border
+              >
+                <el-table-column
+                  prop="id"
+                  label="任务ID"
+                />
+                <el-table-column
+                  prop="spider"
+                  label="爬虫"
+                />
+                <el-table-column
+                  prop="status"
+                  label="状态"
+                />
+                <el-table-column
+                  prop="duration_str"
+                  label="耗时"
+                />
+                <el-table-column
+                  prop="start_time"
+                  label="开始时间"
+                />
+                <el-table-column
+                  prop="end_time"
+                  label="结束时间"
+                />
+                <el-table-column
+                  label="日志"
+                >
+                  <template slot-scope="scope">
+                    <el-link :underline="false" type="primary" @click="toLog(scope.row)">查看日志</el-link>
+                  </template>
+                </el-table-column>
+              </el-table>
             </div>
           </template>
         </template>
@@ -135,8 +173,9 @@ export default {
       deployProgress: 0
     }
   },
-  created() {
-    this.fetchData()
+  async created() {
+    await this.fetchData()
+    this.$route.query.id && this.handleSelectNode({id: this.$route.query.id})
     this.initAutoRefresh()
   },
   beforeDestroy() {
@@ -225,6 +264,10 @@ export default {
       } finally {
         this.deployLoading = false
       }
+    },
+    toLog(job) {
+      const node = this.activeNodeDetail
+      window.open(`${node.address}/logs/default/${job.spider}/${job.id}.log`)
     }
   }
 }
@@ -335,7 +378,7 @@ export default {
         border: 1px solid #ededed;
         border-radius: 6px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
+        overflow: scroll;
       }
 
       .pane {

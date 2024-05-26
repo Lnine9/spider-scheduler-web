@@ -1,10 +1,11 @@
 <template>
 <div class="node-statistic">
-  <div class="node-list">
+  <div class="node-list" v-loading="loading">
     <template v-for="item in list">
       <div
         :key="item.id"
         class="node-item"
+        @click="toDetail(item.id)"
       >
         <div class="address">
           <img src="@/assets/svg/cloudserver.svg" />
@@ -60,7 +61,7 @@ export default {
   created() {
     this.fetchData()
     this.autoRefreshTimer = setInterval(() => {
-      this.fetchData()
+      this.fetchData(false)
     }, 3000)
   },
   destroyed() {
@@ -70,9 +71,10 @@ export default {
     getNodeStatusColor(status) {
       return NODE_STATUS_COLOR_MAP[status]
     },
-    async fetchData() {
+    async fetchData(needLoading=true) {
       try {
-        this.loading = true
+        if (needLoading)
+          this.loading = true
         const {data} = await getNodeList()
         this.list = data.list
       } catch (e) {
@@ -84,6 +86,9 @@ export default {
     formatAddress(address) {
       return address.replace('http://', '').replace('https://', '')
     },
+    toDetail(id) {
+      this.$router.push({name: 'Nodes', query: {id}})
+    }
   }
 }
 </script>
@@ -94,6 +99,8 @@ export default {
     border-radius: 6px;
     background-color: white;
     height: 100%;
+    min-height: 300px;
+    overflow: scroll;
 
     .node-item {
       display: flex;
